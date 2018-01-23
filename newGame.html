@@ -10,6 +10,8 @@
 		var ballSpeedY = 5;
 		var paddle1Y = 250;
 		var paddle2Y = 250;
+		var player1Score = 0;
+		var player2Score = 0;
 
 		const PADDLE_HEIGHT = 100;
 		const PADDLE_THICKNESS = 10;
@@ -48,14 +50,35 @@
 			ballY = canvas.height/2;
 		}
 
+		function computerMovement() {
+			var paddle2YCentre = paddle2Y + (PADDLE_HEIGHT/2)
+			if (paddle2YCentre < ballY-35) {
+				paddle2Y += 6;
+			} else if (paddle2YCentre > ballY+35) {
+				paddle2Y -= 6;
+			}
+		}
+
 		function moveEverything() {
-			ballX = ballX + ballSpeedX;
-			ballY = ballY + ballSpeedY;
-			if(ballX > canvas.width || ballX < 0) {
-				if(ballY >paddle1Y && ballY < paddle1Y+PADDLE_HEIGHT) {
+			computerMovement();
+
+
+			ballX += ballSpeedX;
+			ballY += ballSpeedY;
+			if(ballX < 0) {
+				if(ballY > paddle1Y && ballY < paddle1Y+PADDLE_HEIGHT) {
 					ballSpeedX = -ballSpeedX; 
 				} else {
 					ballReset();
+					player2Score++;
+				}
+			}
+			if(ballX > canvas.width) {
+				if(ballY >paddle2Y && ballY < paddle2Y+PADDLE_HEIGHT) {
+					ballSpeedX = -ballSpeedX; 
+				} else {
+					ballReset();
+					player1Score++;
 				}
 			}
 			if(ballY > canvas.height || ballY < 0) {
@@ -72,10 +95,13 @@
 			colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, 'white');
 
 			//<ake Right player paddle
-			colorRect(canvas.width-PADDLE_THICKNESS, paddle2Y, PADDLE_THICKNESS, PADDLE_HEIGHT, 'white');
+			colorRect(canvas.width-PADDLE_THICKNESS-0, paddle2Y, PADDLE_THICKNESS, PADDLE_HEIGHT, 'white');
 
 			//next line draws the balls
 			colorCircle(ballX, ballY, 10, 'white')
+
+			canvasContext.fillText(player1Score, 50, 50);
+			canvasContext.fillText(player2Score, canvas.width-50, 50);
 			
 		}
 
